@@ -1,26 +1,26 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose')
+const bodyParser = require('body-parser');
 require('dotenv/config');
 
-//Middlewares
-app.use('/postpage', () => {
+app.use(bodyParser.json());
 
-    console.log("This is a middleware for /postpage")
-});
+//import routes
+const postRoute = require('./routes/posts');
+
+//Middlewares
+app.use('/posts', postRoute);
+app.use('/specific', postRoute);
+
 
 //ROUTES
 app.get('/', (req, res) => {
-
     res.send('We are home');
 });
 
-app.get('/postpage', (req, res) => {
-
-    res.send('We are on post page');
-});
 
 //Connect to DB
 
-mongoose.connect(process.env.DB_CONNECTION, () => console.log("Connected to DB"));
+mongoose.connect(process.env.DB_CONNECTION, { useNewUrlParser: true }, () => console.log("Connected to DB"));
 app.listen(3000);
